@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ro" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soluții Web Profesionale - Prezentare Servicii</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Brilliant Blues -->
+    <!-- Application Structure Plan: The SPA is designed as a sales presentation. It begins with a hero section stating the value. The core is the "Packages" section, which clarifies the user's complex pricing into a clear "One-Time Investment" for creation vs. recurring "Maintenance Plan". An interactive toggle allows clients to see monthly, semi-annual, and annual pricing, directly incorporating all pricing data points. A bar chart visually compares the total first-year cost to highlight savings. Subsequent sections detail Maintenance tiers, Delivery Speed options, and Service Enhancements, ensuring every piece of the original data is included but professionally reframed. -->
+    <!-- Visualization & Content Choices: 1. Pricing Comparison: Goal->Compare. Viz->Interactive Cards with a Toggle (HTML/JS) to switch between Monthly, 6-Month, and Annual payment terms. Justification: This is the most effective way to represent the user's complex, multi-term pricing structure in an easy-to-understand format. 2. First-Year Cost Analysis: Goal->Compare. Viz->Bar Chart (Chart.js). Justification: Visually demonstrates the financial advantage of choosing annual plans, a key sales driver. 3. Service Tiers: Goal->Organize. Viz->Styled Cards (HTML/CSS). Justification: Cleanly separates different service offerings (Packages, Maintenance, Delivery) for clarity. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA;
+            color: #212529;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 450px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .package-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .package-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        }
+        .highlight-card {
+            border: 2px solid #0052CC;
+        }
+        .tab-button.active {
+            background-color: #0052CC;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .animated-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .animated-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .checkmark-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background-color: #10B981;
+            border-radius: 50%;
+            position: relative;
+            flex-shrink: 0;
+            margin-right: 0.75rem;
+        }
+        .checkmark-icon::after {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 4px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/95 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-xl font-bold text-gray-800 tracking-tight">Partenerul Dvs. Digital</a>
+            <a href="#contact-details" class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 font-semibold shadow hover:shadow-lg transform hover:-translate-y-0.5">Solicită Ofertă</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero" class="py-20 md:py-28 bg-white">
+            <div class="container mx-auto px-6 text-center animated-section">
+                <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight tracking-tighter">
+                    Soluții Web Complete <br> pentru Afacerea Dumneavoastră
+                </h1>
+                <p class="mt-6 text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    Vă oferim pachete flexibile care separă clar investiția inițială în crearea website-ului de costurile ulterioare de mentenanță, asigurând transparență totală și valoare pe termen lung.
+                </p>
+            </div>
+        </section>
+
+        <section id="packages" class="py-20">
+            <div class="container mx-auto px-6 animated-section">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 tracking-tight">Pachete Flexibile de Creare și Mentenanță</h2>
+                    <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">Alegeți pachetul de creare și planul de plată care se potrivesc cel mai bine strategiei și bugetului dumneavoastră. Costul lunar de 25€ pentru hosting și mentenanță standard este inclus în prețul total al pachetelor pe 6 și 12 luni.</p>
+                </div>
+
+                <div class="flex justify-center mb-10">
+                    <div class="bg-gray-200 rounded-lg p-1 flex space-x-1" id="pricing-toggle">
+                        <button data-period="monthly" class="tab-button active px-6 py-2 rounded-md font-semibold transition-all duration-300">Lunar</button>
+                        <button data-period="semi-annually" class="tab-button px-6 py-2 rounded-md font-semibold transition-all duration-300">6 Luni</button>
+                        <button data-period="annually" class="tab-button px-6 py-2 rounded-md font-semibold transition-all duration-300">Anual</button>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-8" id="packages-container">
+                </div>
+            </div>
+        </section>
+
+        <section id="cost-analysis" class="py-20 bg-white">
+            <div class="container mx-auto px-6 animated-section">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 tracking-tight">Analiza Costurilor pe Primul An</h2>
+                    <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">Acest grafic ilustrează costul total în primul an pentru fiecare pachet și plan de plată, evidențiind economiile substanțiale ale planurilor anuale.</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="costAnalysisChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="delivery" class="py-20">
+            <div class="container mx-auto px-6 animated-section">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 tracking-tight">Opțiuni de Livrare a Proiectului</h2>
+                    <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">Timpul este esențial. Vă oferim flexibilitate maximă în alegerea termenului de finalizare a website-ului.</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+                    <div class="bg-white rounded-lg p-6 shadow-md text-center border-t-4 border-gray-300">
+                        <h3 class="text-xl font-bold text-gray-800">Livrare Standard</h3>
+                        <p class="text-3xl font-extrabold my-4">14 Zile</p>
+                        <p class="text-gray-600">Beneficiați de un credit pentru planificare.</p>
+                        <div class="text-left mt-4 text-sm space-y-1">
+                            <p class="text-green-600 font-semibold">Plan Lunar: -50 €</p>
+                            <p class="text-green-600 font-semibold">Plan 6 Luni: -75 €</p>
+                            <p class="text-green-600 font-semibold">Plan Anual: -100 €</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg p-6 shadow-lg text-center border-t-4 border-green-500">
+                        <h3 class="text-xl font-bold text-gray-800">Livrare Recomandată</h3>
+                        <p class="text-3xl font-extrabold my-4">7 Zile</p>
+                        <p class="text-gray-600">Opțiunea optimă ca raport viteză-cost.</p>
+                        <p class="mt-4 text-lg font-bold text-green-600">Fără costuri suplimentare</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-6 shadow-md text-center border-t-4 border-yellow-500">
+                        <h3 class="text-xl font-bold text-gray-800">Livrare Prioritară</h3>
+                        <p class="text-3xl font-extrabold my-4">48 Ore</p>
+                        <p class="text-gray-600">Pentru proiecte cu termen limită strâns.</p>
+                        <p class="mt-4 text-lg font-bold">+50 € (la orice plan)</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-6 shadow-md text-center border-t-4 border-red-500">
+                        <h3 class="text-xl font-bold text-gray-800">Livrare Urgentă</h3>
+                        <p class="text-3xl font-extrabold my-4">24 Ore</p>
+                        <p class="text-gray-600">Soluția cea mai rapidă pentru lansare imediată.</p>
+                        <p class="mt-4 text-lg font-bold">+200 € (la orice plan)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="enhancements" class="py-20 bg-white">
+            <div class="container mx-auto px-6 animated-section">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 tracking-tight">Servicii Suplimentare (Add-ons)</h2>
+                    <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">Creșteți performanța website-ului cu funcționalități avansate. Compatibile cu livrările de 7 și 14 zile.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                    <div class="bg-gray-50 rounded-lg p-8 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                        <h3 class="text-2xl font-bold text-gray-800">Integrare Automatizări</h3>
+                        <p class="text-xl font-semibold text-blue-600 my-3">+300 €</p>
+                        <p class="text-gray-600 leading-relaxed">Conectăm formularele de pe site la sisteme externe (CRM, Email Marketing) și creăm fluxuri automate pentru a gestiona eficient contactele noi și a economisi timp.</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-8 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                        <h3 class="text-2xl font-bold text-gray-800">Integrare Asistent AI</h3>
+                        <p class="text-xl font-semibold text-blue-600 my-3">+500 €</p>
+                        <p class="text-gray-600 leading-relaxed">Implementăm un chatbot inteligent pe website-ul dvs. pentru a oferi suport clienților 24/7, a răspunde la întrebări frecvente și a califica potențialii clienți.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact-details" class="py-20 bg-gray-100">
+            <div class="container mx-auto px-6 animated-section">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 tracking-tight">Contactați-ne Direct</h2>
+                    <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">Suntem aici pentru a răspunde oricăror întrebări și pentru a discuta detaliile proiectului dumneavoastră.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto text-center">
+                    <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                        <h3 class="text-2xl font-bold text-gray-900">ROSU DAVID</h3>
+                        <p class="mt-4 text-gray-600 text-lg">
+                            <a href="tel:0753669108" class="hover:text-blue-600 transition-colors">Telefon: 0753 669 108</a>
+                        </p>
+                        <p class="mt-2 text-gray-600 text-lg">
+                            <a href="mailto:davidrosu72@gmail.com" class="hover:text-blue-600 transition-colors">Email: davidrosu72@gmail.com</a>
+                        </p>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                        <h3 class="text-2xl font-bold text-gray-900">Cosmin Ciobanu</h3>
+                        <p class="mt-4 text-gray-600 text-lg">
+                            <a href="tel:0739128782" class="hover:text-blue-600 transition-colors">Telefon: 0739 128 782</a>
+                        </p>
+                        <p class="mt-2 text-gray-600 text-lg">
+                            <a href="mailto:cosminmeus@gmail.com" class="hover:text-blue-600 transition-colors">Email: cosminmeus@gmail.com</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-900 text-white py-6">
+        <div class="container mx-auto px-6 text-center text-gray-400">
+            <p>&copy; 2025 Partenerul Dvs. Digital. Toate drepturile rezervate.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const packagesData = {
+                'one-page': {
+                    name: "Website O Pagină",
+                    features: ["Design modern și responsive", "Ideal pentru prezentări concise", "Formular de contact inclus", "Optimizare SEO de bază"],
+                    pricing: {
+                        monthly: { create: 450, maintain: 25, total: 0 },
+                        'semi-annually': { create: 700, maintain: 0, total: 700 },
+                        annually: { create: 900, maintain: 0, total: 900 }
+                    }
+                },
+                'multi-page': {
+                    name: "Website Multi-Pagină",
+                    features: ["Structură complexă (până la 5 pagini)", "Perfect pentru afaceri în creștere", "Secțiune de blog/știri", "Optimizare SEO avansată"],
+                    pricing: {
+                        monthly: { create: 500, maintain: 25, total: 0 },
+                        'semi-annually': { create: 750, maintain: 0, total: 750 },
+                        annually: { create: 950, maintain: 0, total: 950 }
+                    }
+                },
+                'one-page-pro': {
+                    name: "Website O Pagină + Mentenanță Proactivă",
+                    features: ["Toate beneficiile 'O Pagină'", "Îmbunătățire constantă a site-ului", "Suport prioritar", "Analiză și optimizare periodică"],
+                    pricing: {
+                        monthly: { create: 450, maintain: 175, total: 0 },
+                        'semi-annually': { create: 0, maintain: 0, total: 1350, subsequentTotal: 900 },
+                        annually: { create: 0, maintain: 0, total: 2050 }
+                    },
+                    notes: {
+                        monthly: 'Prima lună 600€ (OTP 450€ + 150€ Maint.), apoi 175€/lună',
+                        'semi-annually': 'Primele 6 luni: 1350€, următoarele: 900€',
+                        annually: 'Total 2050 € / primul an, apoi 1600€/an'
+                    }
+                },
+                'multi-page-pro': {
+                    name: "Website Multi-Pagină + Mentenanță Proactivă",
+                    features: ["Toate beneficiile 'Multi-Pagină'", "Strategie de conținut și dezvoltare", "Performanță și securitate maxime", "Parteneriat pe termen lung"],
+                    pricing: {
+                        monthly: { create: 500, maintain: 375, total: 0 },
+                        'semi-annually': { create: 0, maintain: 0, total: 1900, subsequentTotal: 1350 },
+                        annually: { create: 0, maintain: 0, total: 3100 }
+                    },
+                    notes: {
+                        monthly: 'Prima lună 850€ (OTP 500€ + 350€ Maint.), apoi 375€/lună',
+                        'semi-annually': 'Primele 6 luni: 1900€, următoarele: 1350€',
+                        annually: 'Total 3100 € / primul an, apoi 2600€/an'
+                    }
+                }
+            };
+
+            const pricingToggle = document.getElementById('pricing-toggle');
+            const packagesContainer = document.getElementById('packages-container');
+            let currentPeriod = 'monthly';
+            let costChart;
+
+            function renderPackages() {
+                packagesContainer.innerHTML = '';
+                Object.entries(packagesData).forEach(([key, pkg], index) => {
+                    const periodPrice = pkg.pricing[currentPeriod];
+                    let priceHTML = '';
+                    let noteHTML = '';
+
+                    if (periodPrice.total > 0) {
+                         priceHTML = `<span class="text-5xl font-extrabold text-gray-900">${periodPrice.total}€</span>
+                                     <span class="text-gray-500 text-xl font-medium"> / ${currentPeriod === 'annually' ? 'an' : '6 luni'}</span>`;
+                    } else {
+                        priceHTML = `<span class="text-5xl font-extrabold text-gray-900">${periodPrice.create}€</span>
+                                     <span class="text-gray-500 text-xl font-medium"> + ${periodPrice.maintain}€/lună</span>`;
+                    }
+                    
+                    if(pkg.notes && pkg.notes[currentPeriod]) {
+                        noteHTML = `<p class="text-xs text-gray-500 mt-2">${pkg.notes[currentPeriod]}</p>`;
+                    } else if (currentPeriod !== 'monthly') {
+                        noteHTML = `<p class="text-xs text-gray-500 mt-2">Include creare, hosting și mentenanță</p>`;
+                    } else {
+                        noteHTML = `<p class="text-xs text-gray-500 mt-2">Plată unică + abonament lunar (prima lună de hosting gratuită)</p>`;
+                    }
+
+
+                    const card = `
+                        <div class="package-card bg-white rounded-lg p-8 flex flex-col shadow-lg ${index === 1 || index === 3 ? 'highlight-card' : ''}">
+                            <h3 class="text-2xl font-bold text-gray-800 text-center">${pkg.name}</h3>
+                            <div class="my-6 text-center">${priceHTML}${noteHTML}</div>
+                            <ul class="space-y-4 text-gray-600 mb-8 flex-grow">
+                                ${pkg.features.map(f => `
+                                    <li class="flex items-center">
+                                        <span class="checkmark-icon"></span>
+                                        <span class="leading-relaxed">${f}</span>
+                                    </li>`).join('')}
+                            </ul>
+                            <a href="#contact-details" class="mt-auto w-full text-center ${index === 1 || index === 3 ? 'bg-blue-600 text-white shadow hover:shadow-lg transform hover:-translate-y-0.5' : 'bg-blue-100 text-blue-700'} font-semibold py-3 rounded-lg hover:opacity-90 transition-all duration-300">Alege Pachetul</a>
+                        </div>
+                    `;
+                    packagesContainer.innerHTML += card;
+                });
+            }
+            
+            function calculateFirstYearCost(pkg) {
+                let monthlyTotal;
+                if (pkg.notes && pkg.notes.monthly) {
+                    const firstMonthCost = pkg.pricing.monthly.create + (pkg.pricing.monthly.maintain - 25);
+                    monthlyTotal = firstMonthCost + (pkg.pricing.monthly.maintain * 11);
+                } else {
+                    monthlyTotal = pkg.pricing.monthly.create + (pkg.pricing.monthly.maintain * 11);
+                }
+                
+                let semiAnnuallyTotal;
+                const semiAnnuallyPlan = pkg.pricing['semi-annually'];
+                if (semiAnnuallyPlan.subsequentTotal) {
+                    semiAnnuallyTotal = semiAnnuallyPlan.total + semiAnnuallyPlan.subsequentTotal;
+                } else {
+                    semiAnnuallyTotal = semiAnnuallyPlan.total * 2;
+                }
+
+                const annuallyTotal = pkg.pricing.annually.total;
+
+                return { monthlyTotal, semiAnnuallyTotal, annuallyTotal };
+            }
+
+            function renderChart() {
+                const ctx = document.getElementById('costAnalysisChart').getContext('2d');
+                const chartData = {
+                    labels: Object.values(packagesData).map(p => p.name.replace("Website ", "").replace(" + Mentenanță Proactivă", " Pro").split(" ")),
+                    datasets: [
+                        {
+                            label: 'Cost Total Primul An (Plan Lunar)',
+                            data: Object.values(packagesData).map(p => calculateFirstYearCost(p).monthlyTotal),
+                            backgroundColor: 'rgba(0, 163, 191, 0.6)',
+                            borderColor: 'rgba(0, 163, 191, 1)',
+                            borderWidth: 1,
+                            borderRadius: 5
+                        },
+                        {
+                            label: 'Cost Total Primul An (Plan 6 Luni)',
+                            data: Object.values(packagesData).map(p => calculateFirstYearCost(p).semiAnnuallyTotal),
+                            backgroundColor: 'rgba(0, 82, 204, 0.6)',
+                            borderColor: 'rgba(0, 82, 204, 1)',
+                            borderWidth: 1,
+                            borderRadius: 5
+                        },
+                         {
+                            label: 'Cost Total Primul An (Plan Anual)',
+                            data: Object.values(packagesData).map(p => calculateFirstYearCost(p).annuallyTotal),
+                            backgroundColor: 'rgba(34, 197, 94, 0.6)',
+                            borderColor: 'rgba(34, 197, 94, 1)',
+                            borderWidth: 1,
+                            borderRadius: 5
+                        }
+                    ]
+                };
+
+                if (costChart) {
+                    costChart.destroy();
+                }
+
+                costChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) { return value + '€' }
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    title: function(tooltipItems) {
+                                        const item = tooltipItems[0];
+                                        let label = item.chart.data.labels[item.dataIndex];
+                                        if (Array.isArray(label)) {
+                                          return label.join(' ');
+                                        } else {
+                                          return label;
+                                        }
+                                    },
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += new Intl.NumberFormat('ro-RO', { style: 'currency', currency: 'EUR' }).format(context.parsed.y);
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            pricingToggle.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    currentPeriod = e.target.dataset.period;
+                    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    renderPackages();
+                }
+            });
+            
+            const animatedSections = document.querySelectorAll('.animated-section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            animatedSections.forEach(section => {
+                observer.observe(section);
+            });
+
+            renderPackages();
+            renderChart();
+        });
+    </script>
+</body>
+</html>
+
