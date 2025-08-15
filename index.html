@@ -85,7 +85,7 @@
     <header class="bg-white/95 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="#" class="text-xl font-bold text-gray-800 tracking-tight">Partenerul Dvs. Digital</a>
-            <a href="#contact-details" class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 font-semibold shadow hover:shadow-lg transform hover:-translate-y-0.5">Solicită Ofertă</a>
+            <a href="#contact-form" class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 font-semibold shadow hover:shadow-lg transform hover:-translate-y-0.5">Solicită Ofertă</a>
         </nav>
     </header>
 
@@ -193,11 +193,39 @@
             </div>
         </section>
 
-        <section id="contact-details" class="py-20 bg-gray-100">
+        <section id="contact-form" class="py-20 bg-gray-100">
             <div class="container mx-auto px-6 animated-section">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 tracking-tight">Contactați-ne Direct</h2>
-                    <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">Suntem aici pentru a răspunde oricăror întrebări și pentru a discuta detaliile proiectului dumneavoastră.</p>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 tracking-tight">Trimite-ne un Mesaj</h2>
+                    <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">Completați formularul de mai jos și vă vom contacta în cel mai scurt timp posibil pentru a discuta proiectul dumneavoastră.</p>
+                </div>
+                <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+                    <form action="https://formspree.io/f/xjkozjvz" method="POST">
+                        <div class="mb-6">
+                            <label for="name" class="block text-gray-700 font-semibold mb-2">Numele Dumneavoastră</label>
+                            <input type="text" name="name" id="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" required>
+                        </div>
+                        <div class="mb-6">
+                            <label for="email" class="block text-gray-700 font-semibold mb-2">Adresa de Email</label>
+                            <input type="email" name="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" required>
+                        </div>
+                        <div class="mb-6">
+                            <label for="message" class="block text-gray-700 font-semibold mb-2">Mesajul Dumneavoastră</label>
+                            <textarea name="message" id="message" rows="5" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" required></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="w-full bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 font-semibold text-lg shadow hover:shadow-lg transform hover:-translate-y-0.5">Trimite Mesajul</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact-details" class="py-20">
+            <div class="container mx-auto px-6 animated-section">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 tracking-tight">...sau Contactați-ne Direct</h2>
+                    <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">Dacă preferați o metodă de contact directă, ne puteți suna sau scrie oricând.</p>
                 </div>
                 <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto text-center">
                     <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
@@ -321,7 +349,7 @@
                                         <span class="leading-relaxed">${f}</span>
                                     </li>`).join('')}
                             </ul>
-                            <a href="#contact-details" class="mt-auto w-full text-center ${index === 1 || index === 3 ? 'bg-blue-600 text-white shadow hover:shadow-lg transform hover:-translate-y-0.5' : 'bg-blue-100 text-blue-700'} font-semibold py-3 rounded-lg hover:opacity-90 transition-all duration-300">Alege Pachetul</a>
+                            <a href="#contact-form" class="mt-auto w-full text-center ${index === 1 || index === 3 ? 'bg-blue-600 text-white shadow hover:shadow-lg transform hover:-translate-y-0.5' : 'bg-blue-100 text-blue-700'} font-semibold py-3 rounded-lg hover:opacity-90 transition-all duration-300">Alege Pachetul</a>
                         </div>
                     `;
                     packagesContainer.innerHTML += card;
@@ -458,4 +486,3 @@
     </script>
 </body>
 </html>
-
